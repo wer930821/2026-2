@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>乾坤奪金大師</title>
+    <style>
+        :root { --gold: #fbc531; --magic: #4834d4; --red: #b33939; --dark: #161625; --ancient: #009432; }
+        body { background:#0a0a1a; color:white; font-family:'PingFang TC', sans-serif; text-align:center; padding:10px; margin:0; line-height:1.5; }
+        .box { background: linear-gradient(160deg, #161625, #2c3e50); border: 3px solid var(--gold); border-radius: 20px; padding: 15px; max-width: 450px; margin: 10px auto; box-shadow: 0 0 20px rgba(251, 197, 49, 0.2); }
+        h1 { color: var(--gold); font-size: 24px; margin: 10px 0; text-shadow: 0 0 10px rgba(251,197,49,0.6); font-weight: 900; letter-spacing: 2px; }
+        .subtitle { font-size: 10px; color: #f5f6fa; margin-bottom: 15px; border: 1px solid var(--gold); padding: 5px; border-radius: 5px; display: inline-block; background: rgba(179, 57, 57, 0.3); font-weight: bold; }
+        .section-title { background: var(--red); color: white; padding: 5px 10px; border-radius: 5px; font-size: 14px; margin: 15px 0 10px; font-weight: bold; border-left: 5px solid var(--gold); text-align: left; }
+        label { display: block; text-align: left; color: #dcdde1; font-size: 13px; margin: 8px 0 3px; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 16px; margin-bottom: 5px; box-sizing: border-box; background: #f5f6fa; color: #333; font-weight: bold; }
+        
+        .btn { width: 100%; padding: 18px; background: linear-gradient(to right, #f1c40f, #f39c12); color: #2c3e50; border: none; border-radius: 12px; font-weight: 900; font-size: 18px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #b8860b; transition: 0.1s; }
+        .btn:active { transform: translateY(3px); box-shadow: none; }
+        .btn-history { background: #8e44ad; color: white; padding: 12px; font-size: 16px; box-shadow: 0 4px 0 #5e3370; margin-top: 10px; }
+        
+        #res { display:none; margin-top: 25px; text-align: left; animation: slideIn 0.6s; }
+        @keyframes slideIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+        .card { background: rgba(255, 255, 255, 0.95); color: #333; padding: 15px; border-radius: 15px; margin-bottom: 15px; border-left: 8px solid var(--magic); }
+        .card-h { font-weight: 900; color: var(--red); border-bottom: 1px dashed #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .tags-container { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; justify-content: center; }
+        .sys-tag { background: #333; color: white; font-size: 10px; padding: 3px 6px; border-radius: 4px; border: 1px solid #666; }
+        .tag-east { border-color: #c0392b; color: #ff7675; }
+        .tag-west { border-color: #4834d4; color: #a29bfe; }
+        .tag-nord { border-color: #0984e3; color: #74b9ff; }
+        .tag-maya { border-color: #009432; color: #55efc4; }
+        .tag-time { border-color: #f39c12; color: #f1c40f; font-weight: bold; }
+        
+        .score-board { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; background: #e8e8e8; border-radius: 8px; padding: 10px; margin: 10px 0; font-size: 12px; border: 1px solid #ccc; text-align: center; }
+        .score-item { background: white; padding: 5px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-weight: bold; }
+        
+        .ana-box { background: #f0f0f5; padding: 10px; border-radius: 8px; font-size: 13px; color: #444; margin-top: 10px; border: 1px dashed #aaa; line-height: 1.6; }
+        .score-box { text-align: center; padding: 15px; border-radius: 10px; color: white; font-weight: bold; font-size: 18px; margin-top: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        
+        .num-ball { display: inline-block; background: radial-gradient(circle at 30% 30%, #ff4d4d, #b33939); color: white; width: 60px; height: 60px; line-height: 60px; text-align: center; border-radius: 50%; margin: 10px auto; font-weight: 900; border: 3px solid var(--gold); font-size: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+        .recommend-title { font-weight: bold; color: #2c3e50; margin-top: 15px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; }
+        
+        #historyBox { display:none; background: #2c3e50; padding: 15px; border-radius: 15px; margin-top: 15px; border: 2px solid #8e44ad; text-align: left; }
+        .hist-item { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; border-left: 4px solid var(--gold); }
+        .hist-time { font-size: 11px; color: #aaa; }
+        .clear-btn { background: #c0392b; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; float: right; font-size: 12px; }
+
+        #realTimeClock { background: rgba(0,0,0,0.6); color: #fbc531; padding: 2px 6px; border-radius: 5px; font-family: monospace; font-size: 14px; margin-left: 5px; border: 1px solid #fbc531; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h1>🪐 乾坤奪金大師</h1>
+    <div class="subtitle">🌍 全球神祕學共振 ➕ 擇日擇時預知系統</div>
+    
+    <div class="section-title">👤 第一步：建構本命磁場</div>
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1;"><label>姓名</label><input type="text" id="uName" placeholder="輸入姓名"></div>
+        <div style="flex:1;"><label>性別</label><select id="uGender"><option value="男">乾(男)</option><option value="女">坤(女)</option></select></div>
+    </div>
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1;"><label>生日</label><input type="date" id="bDate"></div>
+        <div style="flex:1;"><label>時辰</label>
+            <select id="bHour">
+                <option value="24">未知 (由宇宙觸機定盤)</option>
+                <option value="0">子(23-01)</option><option value="2">丑(01-03)</option><option value="4">寅(03-05)</option><option value="6">卯(05-07)</option>
+                <option value="8">辰(07-09)</option><option value="10">巳(09-11)</option><option value="12">午(11-13)</option><option value="14">未(13-15)</option>
+                <option value="16">申(15-17)</option><option value="18">酉(17-19)</option><option value="20">戌(19-21)</option><option value="22">亥(21-23)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="section-title">🎫 第二步：全球公審目標檢定</div>
+    <label>選擇目標款式與面額</label>
+    <select id="tSelect" style="border: 2px solid var(--red);" onchange="updateMaxNum()">
+        <option value="0_全品項綜合運勢">✨ 【不指定款式】 測算目標時辰整體運勢 ✨</option>
+        <optgroup label="2000元面額">
+            <option value="2000_2,000萬超級紅包">【2000元】 2,000萬超級紅包</option>
+        </optgroup>
+        <optgroup label="1000元面額">
+            <option value="1000_1,200萬大吉利">【1000元】 1,200萬大吉利</option>
+        </optgroup>
+        <optgroup label="500元面額">
+            <option value="500_五路財神">【500元】 五路財神</option>
+            <option value="500_哈啾咪">【500元】 哈啾咪</option>
+            <option value="500_金馬獎（100%中獎）">【500元】 金馬獎（100%中獎）</option>
+            <option value="500_金牌777">【500元】 金牌777</option>
+        </optgroup>
+        <optgroup label="300元面額">
+            <option value="300_海底大尋寶">【300元】 海底大尋寶</option>
+        </optgroup>
+        <optgroup label="200元面額">
+            <option value="200_金馬報喜">【200元】 金馬報喜</option>
+            <option value="200_金好鑽">【200元】 金好鑽</option>
+            <option value="200_好運連發">【200元】 好運連發</option>
+            <option value="200_大三元">【200元】 大三元</option>
+        </optgroup>
+        <optgroup label="100元面額">
+            <option value="100_推金幣">【100元】 推金幣</option>
+            <option value="100_財神報到">【100元】 財神報到</option>
+            <option value="100_財源滾滾">【100元】 財源滾滾</option>
+        </optgroup>
+    </select>
+    
+    <label>目標號碼尾數 (選填)</label>
+    <input type="number" id="tNum" min="1" max="100" placeholder="輸入尾數 1~100 (沒想法可不填)">
+
+    <div class="section-title" style="background: #27ae60; border-left-color: #f1c40f;">⏳ 第三步：設定起卦時間</div>
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1;">
+            <label>預計購買日 (預設今天)</label>
+            <input type="date" id="buyDate">
+        </div>
+        <div style="flex:1;">
+            <label>購買時辰 <span id="realTimeClock">00:00:00</span></label>
+            <select id="buyHour">
+                <option value="auto">✨ 自動偵測當下時辰</option>
+                <option value="0">子時 (23-01)</option>
+                <option value="2">丑時 (01-03)</option>
+                <option value="4">寅時 (03-05)</option>
+                <option value="6">卯時 (05-07)</option>
+                <option value="8">辰時 (07-09)</option>
+                <option value="10">巳時 (09-11)</option>
+                <option value="12">午時 (11-13)</option>
+                <option value="14">未時 (13-15)</option>
+                <option value="16">申時 (15-17)</option>
+                <option value="18">酉時 (17-19)</option>
+                <option value="20">戌時 (19-21)</option>
+                <option value="22">亥時 (21-23)</option>
+            </select>
+        </div>
+    </div>
+
+    <button class="btn" onclick="go()">🌍 啟動世界級共振盤算！</button>
+    
+    <button class="btn btn-history" onclick="toggleHistory()">📜 查看歷史奪金紀錄</button>
+
+    <div id="historyBox">
+        <h3 style="margin: 0 0 10px 0; color: var(--gold);">📜 歷史檢定紀錄 <button class="clear-btn" onclick="clearHistory()">清空</button></h3>
+        <div id="historyList"></div>
+    </div>
+
+    <div id="res">
+        <div class="card" style="border-left-color: #f1c40f;">
+            <div class="card-h">🌍 全球神祕學大審判結果</div>
+            <div style="font-size:14px; text-align:center;">
+                測算目標： <b style="color:#d35400;" id="r_target_info"></b>
+            </div>
+            
+            <div class="tags-container" id="o_magic_tags"></div>
+
+            <div class="score-board">
+                <div class="score-item" style="color: #c0392b;">☯️ 東方: <span id="s_east"></span>/25</div>
+                <div class="score-item" style="color: #4834d4;">🔮 西方: <span id="s_west"></span>/25</div>
+                <div class="score-item" style="color: #0984e3;">ᚱ 北歐: <span id="s_nord"></span>/25</div>
+                <div class="score-item" style="color: #009432;">🦅 薩滿: <span id="s_maya"></span>/25</div>
+            </div>
+
+            <div id="o_score_box" class="score-box"></div>
+            <div class="ana-box" id="o_target_ana"></div>
+            
+            <div class="recommend-title" id="t_recommend_title">👇 宇宙共振專屬尾數 👇</div>
+            <div style="text-align:center;"><div class="num-ball" id="o_lucky_num_1"></div></div>
+        </div>
+
+        <div class="card" style="border-left-color: #27ae60;">
+            <div class="card-h">💡 蓋亞意識最推薦方案</div>
+            <div style="font-size:13px; margin-bottom:5px;">綜合四大系統與您選定的時辰，最旺款式：</div>
+            <div id="o_price" style="font-weight:bold; color:#d35400;"></div>
+            <span id="o_name" style="font-size: 18px; color: #d63031; font-weight: 900; display: block; margin: 5px 0;"></span>
+            <div id="o_ana_lotto" style="font-size:13px; color:#555;"></div>
+            
+            <div class="recommend-title">👇 備用款專屬幸運尾數 👇</div>
+            <div style="text-align:center;"><div class="num-ball" id="o_lucky_num_2"></div></div>
+        </div>
+        
+        <div id="o_pos" style="font-weight:bold; color:var(--gold); margin-top:15px; text-align:center; font-size:16px;"></div>
+    </div>
+</div>
+
+<script>
+function updateRealTimeClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('realTimeClock').innerText = `${h}:${m}:${s}`;
+}
+
+let currentMaxNum = 100;
+
+function updateMaxNum() {
+    const val = document.getElementById('tSelect').value;
+    const price = parseInt(val.split('_')[0]);
+    if (price === 2000) currentMaxNum = 19;
+    else if (price === 1000) currentMaxNum = 25;
+    else if (price === 500) currentMaxNum = 50;
+    else currentMaxNum = 100; 
+    
+    const numInput = document.getElementById('tNum');
+    numInput.max = currentMaxNum;
+    
+    // ✨ 修改了提示文字，保證從 1 開始
+    if (price === 0) numInput.placeholder = `輸入尾數 1~100 (沒想法可不填)`;
+    else numInput.placeholder = `此面額最多${currentMaxNum}張，輸入 1~${currentMaxNum}`;
+}
+
+window.onload = function() {
+    updateRealTimeClock();
+    setInterval(updateRealTimeClock, 1000);
+
+    let savedProfile = localStorage.getItem('lottoProfile');
+    if (savedProfile) {
+        let p = JSON.parse(savedProfile);
+        if(p.name) document.getElementById('uName').value = p.name;
+        if(p.gender) document.getElementById('uGender').value = p.gender;
+        if(p.bd) document.getElementById('bDate').value = p.bd;
+        if(p.bh) document.getElementById('bHour').value = p.bh;
+    }
+    updateMaxNum(); 
+};
+
+function saveHistory(targetInfo, scoreStr, color) {
+    let history = JSON.parse(localStorage.getItem('lottoRecord')) || [];
+    let now = new Date();
+    let timeStr = `${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${now.getMinutes()<10?'0':''}${now.getMinutes()}`;
+    history.unshift({ time: timeStr, info: targetInfo, score: scoreStr, color: color });
+    if(history.length > 10) history.pop(); 
+    localStorage.setItem('lottoRecord', JSON.stringify(history));
+}
+
+function toggleHistory() {
+    let box = document.getElementById('historyBox');
+    if (box.style.display === 'block') box.style.display = 'none';
+    else { renderHistory(); box.style.display = 'block'; }
+}
+
+function renderHistory() {
+    let history = JSON.parse(localStorage.getItem('lottoRecord')) || [];
+    let list = document.getElementById('historyList');
+    if (history.length === 0) { list.innerHTML = "<div style='color:#ccc; font-size:13px;'>目前尚無紀錄。</div>"; return; }
+    let html = "";
+    history.forEach(item => {
+        html += `<div class="hist-item" style="border-left-color: ${item.color};">
+                    <span class="hist-time">[${item.time}]</span> <b>${item.info}</b><br>
+                    <span style="color:${item.color}; font-weight:bold;">${item.score}</span></div>`;
+    });
+    list.innerHTML = html;
+}
+
+function clearHistory() {
+    if(confirm("確定要清空所有紀錄嗎？")) { localStorage.removeItem('lottoRecord'); renderHistory(); }
+}
+
+function go() {
+    const name = document.getElementById('uName').value;
+    const bd = document.getElementById('bDate').value;
+    const bh = parseInt(document.getElementById('bHour').value);
+    const gender = document.getElementById('uGender').value;
+    
+    const targetVal = document.getElementById('tSelect').value;
+    const [tPriceStr, tName] = targetVal.split('_');
+    const tPrice = parseInt(tPriceStr); 
+    const tNumInput = document.getElementById('tNum').value;
+    const tNum = tNumInput ? parseInt(tNumInput) : 0;
+
+    // ✨ 防呆升級：阻擋 0 跟 負數
+    if (tNumInput !== "" && (tNum > currentMaxNum || tNum < 1)) {
+        alert(`⚠️ 號碼尾數錯誤！\n台灣彩券沒有 0 號，請輸入 1 到 ${currentMaxNum} 之間的數字！`);
+        return;
+    }
+    if(!name || !bd) { alert("請填寫姓名與生日啟動全球共振！"); return; }
+
+    localStorage.setItem('lottoProfile', JSON.stringify({ name, gender, bd, bh }));
+
+    const dObj = new Date(bd);
+    const m = dObj.getMonth() + 1;
+    const d = dObj.getDate();
+    
+    const now = new Date();
+    let buyDateInput = document.getElementById('buyDate').value;
+    let targetDateObj = buyDateInput ? new Date(buyDateInput) : now;
+    
+    const targetM = targetDateObj.getMonth() + 1;
+    const targetD = targetDateObj.getDate();
+    
+    let buyHourInput = document.getElementById('buyHour').value;
+    let targetH = now.getHours();
+    let targetMin = now.getMinutes();
+    
+    const shichenNames = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+    let shichenName = "";
+    
+    if (buyHourInput !== "auto") {
+        targetH = parseInt(buyHourInput);
+        targetMin = 0; 
+        shichenName = shichenNames[Math.floor(targetH/2)];
+    } else {
+        let sIdx = Math.floor(((targetH + 1) % 24) / 2);
+        shichenName = shichenNames[sIdx];
+    }
+
+    const baseSeed = m + d + name.length + bh + targetM + targetD; 
+    const itemSeed = baseSeed + tPrice + tName.length + targetH + targetMin; 
+
+    let sEast = (m*2 + bh*3 + tNum + targetH) % 20 + 5; 
+    let sWest = (name.length*5 + tPrice + tNum + targetMin) % 20 + 5;
+    let sNord = (itemSeed * 13 + targetD) % 20 + 5;
+    let sMaya = (baseSeed * 17 + targetM + tNum) % 20 + 5;
+
+    // 🏆 計算幸運號碼 (✨ 保證產生 1 ~ max 之間的數字，絕對沒有 0)
+    const n1 = (itemSeed * 7 + 13) % currentMaxNum + 1; 
+    const altMaxArr = [19, 25, 50, 100, 100]; 
+    const altItemIndex = targetH % 5;
+    const bn1 = (baseSeed * 11 + targetH * 3 + 36) % altMaxArr[altItemIndex] + 1;
+
+    let isPerfectMatch = false;
+    if (tNumInput !== "" && (tNum === n1 || tNum === bn1)) {
+        sEast = 24 + (baseSeed % 2); sWest = 23 + (itemSeed % 3);
+        sNord = 24; sMaya = 25;
+        isPerfectMatch = true;
+    }
+    
+    let matchScore = sEast + sWest + sNord + sMaya; 
+
+    document.getElementById('s_east').innerText = sEast;
+    document.getElementById('s_west').innerText = sWest;
+    document.getElementById('s_nord').innerText = sNord;
+    document.getElementById('s_maya').innerText = sMaya;
+
+    let displayTarget = tPrice === 0 ? "【綜合整體運勢】" : `${tPrice}元的「${tName}」`;
+    displayTarget += tNumInput ? ` (測算尾數 ${tNum})` : ``;
+    document.getElementById('r_target_info').innerText = displayTarget;
+    
+    const iChing = ["乾為天(大吉)", "火水未濟(轉機)", "地天泰(通達)", "雷水解(化解)"];
+    const tarot = ["皇帝", "皇后", "命運之輪", "太陽", "世界", "魔術師"];
+    const runes = ["Fehu(財富)", "Jera(豐收)", "Gebo(禮物)", "Wunjo(喜悅)"];
+    const mayan = ["黃太陽(啟發)", "紅龍(誕生)", "藍夜(直覺)", "白風(靈感)", "黃星星(優雅)"];
+    const spiritAnimal = ["老鷹(遠見)", "狼(直覺)", "熊(力量)", "美洲豹(迅捷)"];
+    
+    let eTag = iChing[itemSeed % 4];
+    let wTag = tarot[itemSeed % 6];
+    let nTag = runes[itemSeed % 4];
+    let mTag = mayan[itemSeed % 5];
+    let aTag = spiritAnimal[baseSeed % 4];
+
+    document.getElementById('o_magic_tags').innerHTML = `
+        <span class="sys-tag tag-time">🕒 購買時間: ${targetM}/${targetD} (${shichenName}時)</span><br>
+        <span class="sys-tag tag-east">易經: ${eTag}</span>
+        <span class="sys-tag tag-west">塔羅: ${wTag}</span>
+        <span class="sys-tag tag-nord">盧恩: ${nTag}</span>
+        <span class="sys-tag tag-maya">瑪雅: ${mTag}</span>
+        <span class="sys-tag tag-maya">印第安: ${aTag}</span>
+    `;
+
+    let scoreBox = document.getElementById('o_score_box');
+    let targetAna = document.getElementById('o_target_ana');
+    let scoreStr = "";
+    let themeColor = "";
+    
+    if(matchScore >= 80) {
+        themeColor = "#27ae60";
+        scoreStr = `🌟 宇宙總分 ${matchScore} 分：蓋亞極度推薦！`;
+        scoreBox.style.background = "linear-gradient(to right, #27ae60, #2ecc71)";
+        targetAna.innerHTML = `${isPerfectMatch ? "<b style='color:#c0392b;'>【奇蹟大合相】</b> 輸入正是宇宙指定號碼！<br>" : ""}<b>【時辰解析】</b> 在您指定的 <b>${shichenName}時</b>，東方易經抽出<b>「${eTag}」</b>，西方塔羅顯現<b>「${wTag}」</b>，再加上瑪雅印記<b>「${mTag}」</b>加持。此刻地球能量場與您完美契合，大膽出擊！`;
+    } else if (matchScore >= 50) {
+        themeColor = "#f39c12";
+        scoreStr = `⚡ 宇宙總分 ${matchScore} 分：可以一試`;
+        scoreBox.style.background = "linear-gradient(to right, #f39c12, #e67e22)";
+        targetAna.innerHTML = `<b>【時辰解析】</b> 在指定的 <b>${shichenName}時</b>，四大法庭意見分歧。東方磁場平穩，但盧恩符文提示有變數。此時需借用靈獸<b>「${aTag}」</b>的力量，若有強烈直覺可嘗試入手。`;
+    } else {
+        themeColor = "#c0392b";
+        scoreStr = `⚠️ 宇宙總分 ${matchScore} 分：建議更換時辰或號碼`;
+        scoreBox.style.background = "linear-gradient(to right, #c0392b, #e74c3c)";
+        targetAna.innerHTML = `<b>【時辰解析】</b> 在指定的 <b>${shichenName}時</b>，四大文明系統同時發出警訊。塔羅星象能量受阻，瑪雅磁場混亂。<br><b>【對策】</b> 強烈建議「換一個時辰」再去買，或改買下方備用款式。`;
+    }
+    
+    scoreBox.innerHTML = scoreStr;
+    const formatNum = n => n < 10 ? '0' + n : n;
+    document.getElementById('t_recommend_title').innerText = tPrice === 0 ? `👇 ${shichenName}時 蓋亞指定尾數 👇` : `👇 宇宙為此款安排的本命尾數 👇`;
+    document.getElementById('o_lucky_num_1').innerText = formatNum(n1);
+
+    const styles = [
+        {p:"NT$ 2,000", n:"2,000萬超級紅包", a:`星盤木星入財宮，搭配瑪雅印記<b>「${mTag}」</b>，大獎最契合。`},
+        {p:"NT$ 1,000", n:"1,200萬大吉利", a:`易數「乾金生財」，借用動物靈<b>「${aTag}」</b>，易有意外之喜。`},
+        {p:"NT$ 500", n:"金馬獎(100%中獎)", a:`星盤顯示此時宜穩，北歐符文<b>「${nTag}」</b>指引保底能守財。`},
+        {p:"NT$ 200", n:"金馬報喜", a:`此時最能帶動本命偏財，加上瑪雅<b>「${mTag}」</b>指引，爆發力極強。`},
+        {p:"NT$ 100", n:"財源滾滾", a:`易經「坎水流動」，順應動物靈<b>「${aTag}」</b>的直覺，小額多點開花。`}
+    ];
+    const ch = styles[altItemIndex];
+    document.getElementById('o_price').innerText = "宇宙指引面額：" + ch.p;
+    document.getElementById('o_name').innerText = ch.n;
+    document.getElementById('o_ana_lotto').innerHTML = "星際解析：" + ch.a;
+
+    document.getElementById('o_lucky_num_2').innerText = formatNum(bn1);
+
+    const pos = ["正東", "正南", "正西", "正北", "東南", "西南", "西北", "東北"];
+    document.getElementById('o_pos').innerText = "📍 最佳財氣牽引方位：朝向家中的「" + pos[(baseSeed + targetH) % 8] + "」";
+
+    document.getElementById('res').style.display = 'block';
+    saveHistory(displayTarget, scoreStr, themeColor);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
