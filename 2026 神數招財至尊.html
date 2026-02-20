@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2026神數招財大師</title>
+    <style>
+        body { background-color: #2D0B07; color: white; text-align: center; font-family: 'PingFang TC', sans-serif; margin: 0; padding: 10px; }
+        .box { background-color: #c23616; border: 4px solid #fbc531; border-radius: 25px; padding: 15px; max-width: 420px; margin: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+        h1 { color: #fbc531; font-size: 24px; margin: 10px 0 5px 0; text-shadow: 2px 2px 0px #000; }
+        .tag { background: #fbc531; color: #4b0000; padding: 2px 12px; border-radius: 50px; font-weight: bold; font-size: 13px; display: inline-block; margin-bottom: 15px; }
+        label { display: block; margin: 10px 0 5px; color: #fbc531; font-weight: bold; text-align: left; }
+        input, select { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; background: white; color: #333; }
+        .btn { width: 100%; padding: 20px; background: linear-gradient(#fbc531, #e1b12c); color: #4b0000; border: none; border-radius: 15px; font-weight: 900; font-size: 22px; cursor: pointer; box-shadow: 0 6px 0 #b8860b; }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        
+        #resArea { display: none; margin-top: 20px; text-align: left; animation: slideUp 0.6s ease-out; }
+        @keyframes slideUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
+        .res-card { background: #fff; color: #333; padding: 18px; border-radius: 20px; margin-bottom: 12px; border-left: 10px solid #fbc531; }
+        .res-header { font-weight: 900; color: #c23616; border-bottom: 2px dashed #fbc531; padding-bottom: 5px; margin-bottom: 10px; font-size: 18px; }
+        .lotto-highlight { font-size: 24px; font-weight: 900; color: #c23616; background: #fff2cc; padding: 10px; border-radius: 10px; display: block; text-align: center; margin: 10px 0; border: 2px solid #fbc531; }
+        .time-badge { background: #e67e22; color: white; padding: 5px 15px; border-radius: 8px; font-size: 18px; font-weight: 900; display: block; text-align: center; margin-top: 5px; }
+        .num-ball { display: inline-block; background: #c23616; color: #fff; width: 40px; height: 40px; line-height: 40px; text-align: center; border-radius: 50%; margin: 3px; font-weight: bold; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h1>🧧 2026 神數招財</h1>
+    <div class="tag">丙午馬年 ‧ 彩券行營業時間優化版</div>
+    
+    <label>出生日期 (定五行財庫)</label>
+    <input type="date" id="bDate">
+    
+    <label>出生時辰 (定紫微格局)</label>
+    <select id="bHour">
+        <option value="0">子時 (23-01)</option><option value="2">丑時 (01-03)</option>
+        <option value="4">寅時 (03-05)</option><option value="6">卯時 (05-07)</option>
+        <option value="8">辰時 (07-09)</option><option value="10">巳時 (09-11)</option>
+        <option value="12">午時 (11-13)</option><option value="14">未時 (13-15)</option>
+        <option value="16">申時 (15-17)</option><option value="18">酉時 (17-19)</option>
+        <option value="20">戌時 (19-21)</option><option value="22">亥時 (21-23)</option>
+    </select>
+
+    <button class="btn" onclick="analyze2026()">觀測今日招財款式與時機</button>
+
+    <div id="resArea">
+        <div class="res-card">
+            <div class="res-header">🕒 最佳購買時段 (彩券行營業內)</div>
+            <div id="out_luck" style="font-weight:bold; color:#d35400;"></div>
+            <span class="time-badge" id="out_time"></span>
+            <div style="font-size:12px; color:#666; margin-top:5px; text-align:center;">※已過濾非營業時間，此段財氣感應最強</div>
+        </div>
+
+        <div class="res-card">
+            <div class="res-header">🎯 建議購買款式</div>
+            <div style="font-size:14px; font-weight:bold;">推薦面額：<span id="out_price" style="color:#c23616;"></span></div>
+            <span class="lotto-highlight" id="out_name"></span>
+            <div id="out_desc" style="font-size:14px; line-height:1.5; color:#555;"></div>
+        </div>
+
+        <div class="res-card" style="text-align:center;">
+            <div class="res-header">🗝️ 2026 易經招財數</div>
+            <div id="out_nums"></div>
+            <div id="out_pos" style="margin-top:10px; font-weight:bold; color:#c23616; font-size:15px;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function analyze2026() {
+    var bd = document.getElementById('bDate').value;
+    var bh = parseInt(document.getElementById('bHour').value);
+    if(!bd) { alert("請輸入出生日期！"); return; }
+
+    var bDate = new Date(bd);
+    var now = new Date();
+    var m = bDate.getMonth() + 1;
+    var d = bDate.getDate();
+    var nowD = now.getDate();
+    
+    // 1. 今日手氣
+    var score = (m + d + nowD + 2026) % 10;
+    var luckT = score > 7 ? "✨【今日大吉】馬年財氣全開，適合大舉進攻！" : (score > 4 ? "⚖️【今日平吉】財運穩定，選紅金配色最招財。" : "☁️【今日小試】建議以 100-200 元款式試手氣。");
+    document.getElementById('out_luck').innerText = luckT;
+
+    // 2. 彩券行營業時間過濾演算法 (08:00 - 24:00)
+    // 邏輯：根據八字算出合適時辰，若落在 01-08 則自動推移至陽氣上升的營業時段
+    var hrs = ["辰時 (07-09)","巳時 (09-11)","午時 (11-13)","未時 (13-15)","申時 (15-17)","酉時 (17-19)","戌時 (19-21)","亥時 (21-23)"];
+    var timeIndex = (bh + m + now.getHours()) % 8; // 限定在後8個營業時段
+    document.getElementById('out_time').innerText = "📍 最佳出手：" + hrs[timeIndex];
+
+    // 3. 2026 官方清單對應
+    var styles = [
+        {p:"2000元 / 1000元", n:"2,000萬超級紅包 / 1,200萬大吉利", d:"大財星照命。2026 丙午年火氣旺，直接挑戰最高頭獎款式！"},
+        {p:"500元", n:"金馬獎 (100%中獎) / 五路財神 / 金牌777", d:"貴人星動。推薦 100% 中獎的『金馬獎』鎖定勝果。"},
+        {p:"500元 / 300元", n:"哈啾咪 / 海底大尋寶", d:"文昌財入。海底大尋寶這種慢慢刮的款式最能發揮您的細心。"},
+        {p:"200元", n:"金馬報喜 / 金好鑽 / 好運連發 / 大三元", d:"偏財奇效。2026 馬年特化款『金馬報喜』是您的幸運物。"},
+        {p:"100元", n:"推金幣 / 財神報到 / 財源滾滾 / 馬年行大運", d:"食神生財。適合小額多張，在不同店家『換手氣』。"}
+    ];
+    var ch = styles[(m + bh) % 5];
+    document.getElementById('out_price').innerText = ch.p;
+    document.getElementById('out_name').innerText = ch.n;
+    document.getElementById('out_desc').innerText = "2026 策略："+ch.d;
+
+    // 4. 易經數字方位
+    var s = bDate.getFullYear() + m + d + nowD + 2026;
+    var n = [s % 99, (s * 3) % 99, (s + 26) % 99];
+    var nh = "";
+    for(var i=0; i<3; i++) { nh += '<span class="num-ball">'+(n[i]<10?"0"+n[i]:n[i])+'</span>'; }
+    document.getElementById('out_nums').innerHTML = nh;
+
+    var pos = ["正東","正南","正西","正北","東南","西南","西北","東北"];
+    document.getElementById('out_pos').innerText = "📍 招財方位：前往家中的「" + pos[(m+d+nowD+1)%8] + "」方彩券行";
+
+    document.getElementById('resArea').style.display = 'block';
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
