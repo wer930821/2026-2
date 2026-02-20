@@ -45,7 +45,6 @@
         .hist-time { font-size: 11px; color: #aaa; }
         .clear-btn { background: #c0392b; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; float: right; font-size: 12px; }
 
-        /* 即時電子鐘樣式 */
         #realTimeClock { background: rgba(0,0,0,0.6); color: #fbc531; padding: 2px 6px; border-radius: 5px; font-family: monospace; font-size: 14px; margin-left: 5px; border: 1px solid #fbc531; letter-spacing: 1px; }
     </style>
 </head>
@@ -105,7 +104,7 @@
     </select>
     
     <label>目標號碼尾數 (選填)</label>
-    <input type="number" id="tNum" min="0" max="100" placeholder="輸入尾數 0~100 (沒想法可不填)">
+    <input type="number" id="tNum" min="1" max="100" placeholder="輸入尾數 1~100 (沒想法可不填)">
 
     <div class="section-title" style="background: #27ae60; border-left-color: #f1c40f;">⏳ 第三步：設定起卦時間</div>
     <div style="display:flex; gap:10px;">
@@ -181,7 +180,6 @@
 </div>
 
 <script>
-// --- 即時跳動電子鐘功能 ---
 function updateRealTimeClock() {
     const now = new Date();
     const h = String(now.getHours()).padStart(2, '0');
@@ -202,12 +200,13 @@ function updateMaxNum() {
     
     const numInput = document.getElementById('tNum');
     numInput.max = currentMaxNum;
-    if (price === 0) numInput.placeholder = `輸入尾數 0~100 (沒想法可不填)`;
-    else numInput.placeholder = `此面額最多${currentMaxNum}張，輸入 0~${currentMaxNum}`;
+    
+    // ✨ 修改了提示文字，保證從 1 開始
+    if (price === 0) numInput.placeholder = `輸入尾數 1~100 (沒想法可不填)`;
+    else numInput.placeholder = `此面額最多${currentMaxNum}張，輸入 1~${currentMaxNum}`;
 }
 
 window.onload = function() {
-    // 啟動電子鐘
     updateRealTimeClock();
     setInterval(updateRealTimeClock, 1000);
 
@@ -266,8 +265,9 @@ function go() {
     const tNumInput = document.getElementById('tNum').value;
     const tNum = tNumInput ? parseInt(tNumInput) : 0;
 
-    if (tNumInput !== "" && (tNum > currentMaxNum || tNum < 0)) {
-        alert(`⚠️ 號碼尾數錯誤！\n請輸入 0 到 ${currentMaxNum} 之間的數字！`);
+    // ✨ 防呆升級：阻擋 0 跟 負數
+    if (tNumInput !== "" && (tNum > currentMaxNum || tNum < 1)) {
+        alert(`⚠️ 號碼尾數錯誤！\n台灣彩券沒有 0 號，請輸入 1 到 ${currentMaxNum} 之間的數字！`);
         return;
     }
     if(!name || !bd) { alert("請填寫姓名與生日啟動全球共振！"); return; }
@@ -309,10 +309,11 @@ function go() {
     let sNord = (itemSeed * 13 + targetD) % 20 + 5;
     let sMaya = (baseSeed * 17 + targetM + tNum) % 20 + 5;
 
-    const n1 = (itemSeed * 7 + 13) % (currentMaxNum + 1); 
+    // 🏆 計算幸運號碼 (✨ 保證產生 1 ~ max 之間的數字，絕對沒有 0)
+    const n1 = (itemSeed * 7 + 13) % currentMaxNum + 1; 
     const altMaxArr = [19, 25, 50, 100, 100]; 
     const altItemIndex = targetH % 5;
-    const bn1 = (baseSeed * 11 + targetH * 3 + 36) % (altMaxArr[altItemIndex] + 1);
+    const bn1 = (baseSeed * 11 + targetH * 3 + 36) % altMaxArr[altItemIndex] + 1;
 
     let isPerfectMatch = false;
     if (tNumInput !== "" && (tNum === n1 || tNum === bn1)) {
